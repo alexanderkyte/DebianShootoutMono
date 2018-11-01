@@ -1,0 +1,4 @@
+[submodule "external/BenchmarkDotNet"]
+	path = external/BenchmarkDotNet
+	url = http://github.com/alexanderkyte/BenchmarkDotNet.git
+	branch = mono_aot

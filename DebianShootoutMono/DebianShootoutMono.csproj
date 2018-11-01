@@ -162,14 +162,14 @@
     <Reference Include="System.Numerics.Vectors">
       <HintPath>..\packages\System.Numerics.Vectors.4.5.0\lib\net46\System.Numerics.Vectors.dll</HintPath>
     </Reference>
-    <Reference Include="BenchmarkDotNet">
-      <HintPath>..\..\..\BenchmarkDotNet\src\BenchmarkDotNet\bin\Release\net46\BenchmarkDotNet.dll</HintPath>
-    </Reference>
     <Reference Include="System.Runtime.InteropServices.RuntimeInformation">
       <HintPath>..\..\..\BenchmarkDotNet\src\BenchmarkDotNet\bin\Release\net46\System.Runtime.InteropServices.RuntimeInformation.dll</HintPath>
     </Reference>
     <Reference Include="System.Threading.Tasks.Extensions">
       <HintPath>..\packages\System.Threading.Tasks.Extensions.4.5.1\lib\netstandard2.0\System.Threading.Tasks.Extensions.dll</HintPath>
+    </Reference>
+    <Reference Include="BenchmarkDotNet">
+      <HintPath>..\external\BenchmarkDotNet\src\BenchmarkDotNet\bin\Release\net46\BenchmarkDotNet.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
