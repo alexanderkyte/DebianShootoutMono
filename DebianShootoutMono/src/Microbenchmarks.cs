@@ -16,6 +16,9 @@ namespace BenchmarkDebianShootout
             var aot_run_args = System.Environment.GetEnvironmentVariable("MONO_BENCH_AOT_RUN");
             var jobName = string.Format("Mono At {0}", monoRuntimePath);
 
+            // Default to use llvm, mono falls back to not where applicable
+            Job.Default.With(Jit.Llvm);
+
             var job = Job.ShortRun;
             job = job.With(new MonoRuntime(jobName, monoRuntimePath, aot_args, monoPathVal));
 
