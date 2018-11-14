@@ -2,3 +2,6 @@
 	path = external/BenchmarkDotNet
 	url = http://github.com/alexanderkyte/BenchmarkDotNet.git
 	branch = mono_aot
+[submodule "FlameGraph"]
+	path = FlameGraph
+	url = https://github.com/brendangregg/FlameGraph
