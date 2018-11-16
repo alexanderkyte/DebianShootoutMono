@@ -51,6 +51,9 @@ namespace BenchmarkDebianShootout
                 case "NBodyTest":
                     BenchmarkRunner.Run<NBodyTest>();
                     break;
+                case "GistBenchmark":
+                    BenchmarkRunner.RunUrl (args [1]);
+                    break;
                 default:
                     Console.WriteLine ("No such microbenchmark");
                     break;
