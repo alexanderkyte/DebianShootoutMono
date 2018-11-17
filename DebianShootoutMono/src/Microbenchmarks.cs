@@ -12,6 +12,11 @@ namespace BenchmarkDebianShootout
 		AddRunner (string jobName, string monoPathVal, string monoRuntimePath, string aotArgs, string aotRunArgs)
 		{
 			var job = Job.ShortRun;
+
+			// Make sure that an empty var for net_4_x won't try to "aot" with no --aot= flag
+			if (aotArgs && aotArgs.Length == 0)
+				aotArgs = null;
+
 			job = job.With(new MonoRuntime(jobName, monoRuntimePath, aotArgs, monoPathVal));
 
 			if (aotRunArgs != null)
@@ -26,22 +31,14 @@ namespace BenchmarkDebianShootout
 			var monoPathVal = System.Environment.GetEnvironmentVariable("MONO_BENCH_PATH");
 			var aotArgs = System.Environment.GetEnvironmentVariable("MONO_BENCH_AOT_BUILD");
 			var aotRunArgs = System.Environment.GetEnvironmentVariable("MONO_BENCH_AOT_RUN");
-			var profilerPrefix = System.Environment.GetEnvironmentVariable("MONO_BENCH_PROFILE_PREFIX");
-			var profilerOnly = System.Environment.GetEnvironmentVariable("MONO_BENCH_ONLY_PROFILED");
 			var jobName = string.Format("Mono At {0}", monoRuntimePath);
 
 			// Default to use llvm, mono falls back to not where applicable
 			Job.Default.With(Jit.Llvm);
 
-			if (profilerOnly != null) {
-				// Add a job that's not using a native profiler
-				this.AddRunner (jobName, monoPathVal, monoRuntimePath, aotArgs, aotRunArgs);
-			}
+			this.AddRunner (jobName, monoPathVal, monoRuntimePath, aotArgs, aotRunArgs);
 
-			// Add a job that's using a native profiler
-			this.AddRunner (jobName, monoPathVal, profilerPrefix + monoRuntimePath, aotArgs, aotRunArgs);
-
-			// Add(DisassemblyDiagnoser.Create(new DisassemblyDiagnoserConfig(printIL: true, printAsm: true, printPrologAndEpilog: true, recursiveDepth: 0)));
+			Add(DisassemblyDiagnoser.Create(new DisassemblyDiagnoserConfig(printIL: true, printAsm: true, printPrologAndEpilog: true, recursiveDepth: 0)));
 		}
 	}
 }
