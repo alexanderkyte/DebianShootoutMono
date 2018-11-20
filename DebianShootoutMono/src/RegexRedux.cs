@@ -14,6 +14,7 @@ using BenchmarkDotNet.Jobs;
 using BenchmarkDotNet.Running;
 
 using System;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Text.RegularExpressions;
@@ -35,6 +36,12 @@ namespace BenchmarkDebianShootout
 			var m = regex(r).Match(s);
 			while(m.Success) { c++; m = m.NextMatch(); }
 			return r + " " + c;
+		}
+
+		[GlobalSetup]
+		public void GlobalSetup()
+		{
+			Console.SetIn (new StreamReader (System.Environment.GetEnvironmentVariable ("MONO_BENCH_INPUT")));
 		}
 
 		[Benchmark]

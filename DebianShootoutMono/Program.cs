@@ -23,6 +23,7 @@ namespace BenchmarkDebianShootout
                 BenchmarkRunner.Run<NBodyTest>();
                 return;
             }
+
             switch (args [0]) {
                 case "BinaryTrees":
                     BenchmarkRunner.Run<BinaryTrees>();

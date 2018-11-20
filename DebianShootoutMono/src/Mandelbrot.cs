@@ -14,6 +14,7 @@ using BenchmarkDotNet.Jobs;
 using BenchmarkDotNet.Running;
 
 using System;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Numerics;
@@ -65,30 +66,31 @@ namespace BenchmarkDebianShootout
 			fixed (byte* pdata = &data[0])
 			{
 				var value = new Vector<double>(
-				new double[] {0,1,0,0,0,0,0,0}
-			);
+					new double[] {0,1,0,0,0,0,0,0}
+				);
 
-			var invN = new Vector<double>(2.0/size);
-			var onePtFive = new Vector<double>(1.5);
-			var step = new Vector<double>(2);
-			for (var i=0; i<size; i+=2)
-			{
-				System.Runtime.CompilerServices.Unsafe.Write(pCrb+i, value*invN-onePtFive);
-				value += step;
-			}
-
-			var _Crb = pCrb;
-			var _pdata = pdata;
-			Parallel.For(0, size, y =>
-			{
-				var Ciby = _Crb[y]+0.5;
-				for (var x=0; x<lineLength; x++)
+				var invN = new Vector<double>(2.0/size);
+				var onePtFive = new Vector<double>(1.5);
+				var step = new Vector<double>(2);
+				for (var i=0; i<size; i+=2)
 				{
-					_pdata[y*lineLength+x] = GetByte(_Crb+x*8, Ciby);
+					System.Runtime.CompilerServices.Unsafe.Write(pCrb+i, value*invN-onePtFive);
+					value += step;
 				}
-			});
 
-			Console.OpenStandardOutput().Write(data, 0, data.Length);
+				var _Crb = pCrb;
+				var _pdata = pdata;
+				Parallel.For(0, size, y =>
+				{
+					var Ciby = _Crb[y]+0.5;
+					for (var x=0; x<lineLength; x++)
+					{
+						_pdata[y*lineLength+x] = GetByte(_Crb+x*8, Ciby);
+					}
+				});
+
+				using (var outputStream = File.OpenWrite ("mandelbrot.out"))
+					Console.OpenStandardOutput().Write(data, 0, data.Length);
 			}
 		}
 	}

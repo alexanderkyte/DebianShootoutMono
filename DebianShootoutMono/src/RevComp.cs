@@ -32,7 +32,13 @@ namespace BenchmarkDebianShootout
 		static BlockingCollection<byte[]> readQue = new BlockingCollection<byte[]>();
 		static BlockingCollection<RevCompSequence> writeQue = new BlockingCollection<RevCompSequence>();
 		static byte[] map;
-	
+
+		[GlobalSetup]
+		public void GlobalSetup()
+		{
+			Console.SetIn (new StreamReader (System.Environment.GetEnvironmentVariable ("MONO_BENCH_INPUT")));
+		}
+
 		static int read(Stream stream, byte[] buffer, int offset, int count)
 		{
 			var bytesRead = stream.Read(buffer, offset, count);

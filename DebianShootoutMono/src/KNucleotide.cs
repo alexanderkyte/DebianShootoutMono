@@ -43,7 +43,13 @@ namespace BenchmarkDebianShootout
 		IntPtr entries;
 		GCHandle handle;
 		int count;
-	
+
+		[GlobalSetup]
+		public void GlobalSetup()
+		{
+			Console.SetIn (new StreamReader (System.Environment.GetEnvironmentVariable ("MONO_BENCH_INPUT")));
+		}
+
 		public Incrementor(Dictionary<long, int> d)
 		{
 			dictionary = d;
