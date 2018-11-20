@@ -44,12 +44,6 @@ namespace BenchmarkDebianShootout
 		GCHandle handle;
 		int count;
 
-		[GlobalSetup]
-		public void GlobalSetup()
-		{
-			Console.SetIn (new StreamReader (System.Environment.GetEnvironmentVariable ("MONO_BENCH_INPUT")));
-		}
-
 		public Incrementor(Dictionary<long, int> d)
 		{
 			dictionary = d;
@@ -149,58 +143,58 @@ namespace BenchmarkDebianShootout
 	
 		public static void LoadThreeData()
 		{
-			var stream = Console.OpenStandardInput();
-			
-			// find three sequence
-			int matchIndex = 0;
-			var toFind = new [] {(byte)'>', (byte)'T', (byte)'H', (byte)'R', (byte)'E', (byte)'E'};
-			var buffer = new byte[BLOCK_SIZE];
-			do
-			{
-				threeEnd = read(stream, buffer, 0, BLOCK_SIZE);
-				threeStart = find(buffer, toFind, 0, ref matchIndex);
-			} while (threeStart==-1);
-			
-			// Skip to end of line
-			matchIndex = 0;
-			toFind = new [] {(byte)'\n'};
-			threeStart = find(buffer, toFind, threeStart, ref matchIndex);
-			while(threeStart==-1)
-			{
-				threeEnd = read(stream, buffer, 0, BLOCK_SIZE);
-				threeStart = find(buffer, toFind, 0, ref matchIndex);
-			}
-			threeBlocks.Add(buffer);
-			
-			if(threeEnd!=BLOCK_SIZE) // Needs to be at least 2 blocks
-			{
-				var bytes = threeBlocks[0];
-				for(int i=threeEnd; i<bytes.Length; i++)
-					bytes[i] = 255;
-				threeEnd = 0;
-				threeBlocks.Add(Array.Empty<byte>());
-				return;
-			}
-	
-			// find next seq or end of input
-			matchIndex = 0;
-			toFind = new [] {(byte)'>'};
-			threeEnd = find(buffer, toFind, threeStart, ref matchIndex);
-			while(threeEnd==-1)
-			{
-				buffer = new byte[BLOCK_SIZE];
-				var bytesRead = read(stream, buffer, 0, BLOCK_SIZE);
-				threeEnd = bytesRead==BLOCK_SIZE ? find(buffer, toFind, 0, ref matchIndex)
-							: bytesRead;
+			using (var stream = File.Open (System.Environment.GetEnvironmentVariable ("MONO_BENCH_INPUT"), FileMode.Open)) {
+				// find three sequence
+				int matchIndex = 0;
+				var toFind = new [] {(byte)'>', (byte)'T', (byte)'H', (byte)'R', (byte)'E', (byte)'E'};
+				var buffer = new byte[BLOCK_SIZE];
+				do
+				{
+					threeEnd = read(stream, buffer, 0, BLOCK_SIZE);
+					threeStart = find(buffer, toFind, 0, ref matchIndex);
+				} while (threeStart==-1);
+				
+				// Skip to end of line
+				matchIndex = 0;
+				toFind = new [] {(byte)'\n'};
+				threeStart = find(buffer, toFind, threeStart, ref matchIndex);
+				while(threeStart==-1)
+				{
+					threeEnd = read(stream, buffer, 0, BLOCK_SIZE);
+					threeStart = find(buffer, toFind, 0, ref matchIndex);
+				}
 				threeBlocks.Add(buffer);
-			}
-	
-			if(threeStart+18>BLOCK_SIZE) // Key needs to be in the first block
-			{
-				byte[] block0 = threeBlocks[0], block1 = threeBlocks[1];
-				Buffer.BlockCopy(block0, threeStart, block0, threeStart-18, BLOCK_SIZE-threeStart);
-				Buffer.BlockCopy(block1, 0, block0, BLOCK_SIZE-18, 18);
-				for(int i=0; i<18; i++) block1[i] = 255;
+				
+				if(threeEnd!=BLOCK_SIZE) // Needs to be at least 2 blocks
+				{
+					var bytes = threeBlocks[0];
+					for(int i=threeEnd; i<bytes.Length; i++)
+						bytes[i] = 255;
+					threeEnd = 0;
+					threeBlocks.Add(Array.Empty<byte>());
+					return;
+				}
+		
+				// find next seq or end of input
+				matchIndex = 0;
+				toFind = new [] {(byte)'>'};
+				threeEnd = find(buffer, toFind, threeStart, ref matchIndex);
+				while(threeEnd==-1)
+				{
+					buffer = new byte[BLOCK_SIZE];
+					var bytesRead = read(stream, buffer, 0, BLOCK_SIZE);
+					threeEnd = bytesRead==BLOCK_SIZE ? find(buffer, toFind, 0, ref matchIndex)
+								: bytesRead;
+					threeBlocks.Add(buffer);
+				}
+		
+				if(threeStart+18>BLOCK_SIZE) // Key needs to be in the first block
+				{
+					byte[] block0 = threeBlocks[0], block1 = threeBlocks[1];
+					Buffer.BlockCopy(block0, threeStart, block0, threeStart-18, BLOCK_SIZE-threeStart);
+					Buffer.BlockCopy(block1, 0, block0, BLOCK_SIZE-18, 18);
+					for(int i=0; i<18; i++) block1[i] = 255;
+				}
 			}
 		}
 	

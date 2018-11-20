@@ -38,16 +38,10 @@ namespace BenchmarkDebianShootout
 			return r + " " + c;
 		}
 
-		[GlobalSetup]
-		public void GlobalSetup()
-		{
-			Console.SetIn (new StreamReader (System.Environment.GetEnvironmentVariable ("MONO_BENCH_INPUT")));
-		}
-
 		[Benchmark]
 		public void Run ()
 		{
-			var sequences = Console.In.ReadToEnd();
+			var sequences = File.ReadAllText (System.Environment.GetEnvironmentVariable ("MONO_BENCH_INPUT"));
 			var initialLength = sequences.Length;
 			sequences = Regex.Replace(sequences, ">.*\n|\n", "");
 

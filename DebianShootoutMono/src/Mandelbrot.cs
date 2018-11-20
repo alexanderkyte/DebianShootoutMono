@@ -94,7 +94,7 @@ namespace BenchmarkDebianShootout
 				});
 
 				using (var outputStream = File.OpenWrite ("mandelbrot.out"))
-					Console.OpenStandardOutput().Write(data, 0, data.Length);
+					outputStream.Write(data, 0, data.Length);
 			}
 		}
 	}

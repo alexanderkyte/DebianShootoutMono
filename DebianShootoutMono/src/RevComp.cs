@@ -33,12 +33,6 @@ namespace BenchmarkDebianShootout
 		static BlockingCollection<RevCompSequence> writeQue = new BlockingCollection<RevCompSequence>();
 		static byte[] map;
 
-		[GlobalSetup]
-		public void GlobalSetup()
-		{
-			Console.SetIn (new StreamReader (System.Environment.GetEnvironmentVariable ("MONO_BENCH_INPUT")));
-		}
-
 		static int read(Stream stream, byte[] buffer, int offset, int count)
 		{
 			var bytesRead = stream.Read(buffer, offset, count);
@@ -48,7 +42,7 @@ namespace BenchmarkDebianShootout
 		}
 		static void Reader()
 		{
-			using (var stream = Console.OpenStandardInput())
+			using (var stream = File.Open (System.Environment.GetEnvironmentVariable ("MONO_BENCH_INPUT"), FileMode.Open))
 			{
 				int bytesRead;
 				do
@@ -190,7 +184,9 @@ namespace BenchmarkDebianShootout
 	
 		static void Writer()
 		{
-			using (var stream = Console.OpenStandardOutput())
+			var outName = String.Format("{0}.out", System.Environment.GetEnvironmentVariable ("MONO_BENCH_INPUT"));
+
+			using (var stream = File.Open (outName, FileMode.OpenOrCreate))
 			{
 				bool first = true;
 				RevCompSequence sequence;
