@@ -58,6 +58,10 @@ namespace BenchmarkDebianShootout
 		[Benchmark]
 		public unsafe void Run ()
 		{
+			// Running directly
+			if (size == 0)
+				size = 200;
+
 			Console.Out.WriteAsync(String.Concat("P4\n",size," ",size,"\n"));
 			var Crb = new double[size+2];
 			var lineLength = size >> 3;

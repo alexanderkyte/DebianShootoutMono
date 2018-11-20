@@ -14,7 +14,7 @@ namespace BenchmarkDebianShootout
 			var job = Job.ShortRun;
 
 			// Make sure that an empty var for net_4_x won't try to "aot" with no --aot= flag
-			if (aotArgs && aotArgs.Length == 0)
+			if (aotArgs != null && aotArgs.Length == 0)
 				aotArgs = null;
 
 			job = job.With(new MonoRuntime(jobName, monoRuntimePath, aotArgs, monoPathVal));
