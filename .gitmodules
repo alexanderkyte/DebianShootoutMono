@@ -1,7 +1,7 @@
 [submodule "external/BenchmarkDotNet"]
 	path = external/BenchmarkDotNet
 	url = http://github.com/alexanderkyte/BenchmarkDotNet.git
-	branch = mono_aot
+	branch = mono_aot_1_15_19
 [submodule "external/FlameGraph"]
 	path = external/FlameGraph
 	url = https://github.com/brendangregg/FlameGraph
